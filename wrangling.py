@@ -8,5 +8,5 @@ logging.basicConfig(level=logging.DEBUG,
                     format="%(asctime)s: %(levelname)s - %(message)s")
 
 if __name__ == "__main__":
-    pipline = Pipeline("input/lc_loan_sample.csv")
+    pipline = Pipeline()
     pipline.wrangling()
