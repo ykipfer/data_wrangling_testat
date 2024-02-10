@@ -1,3 +1,6 @@
-{"csv_path": "input/lc_loan_sample.csv",
-"threshold_missing": 0.9
+{
+  "inputdir": "input/",
+  "outputdir": "output/",
+  "threshold_missing": 0.9
+
 }

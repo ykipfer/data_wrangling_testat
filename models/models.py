@@ -1,3 +1,4 @@
+import os
 import logging
 import pandas as pd
 import json
@@ -9,6 +10,7 @@ class Pipeline:
     def __init__(self, config_path="config.json"):
         self.path_to_config = config_path
         self.config = None
+        self.input_file_list = None
         self.df = None
 
     def read_config(self):
@@ -21,15 +23,24 @@ class Pipeline:
         Returns:
             None
         """
+        logging.info(f"Reading config from {self.path_to_config}")
         with open(self.path_to_config) as f:
             self.config = json.load(f)
 
-    def load_data(self):
+    def get_file_list(self):
+        """
+        Returns a list of all files in the specified directory.
+        """
+        self.input_file_list = os.listdir(self.config['inputdir'])
+        logging.info(f"Getting {len(self.input_file_list)} files from {self.config['inputdir']}")
+
+
+    def load_data(self, file):
         """
         Load CSV from the specified path and store it in the dataframe.
         """
-        logging.info(f"Loading data from {self.config['csv_path']}")
-        self.df = pd.read_csv(self.config['csv_path'], low_memory=False)
+        logging.info(f"Loading data from {file}")
+        self.df = pd.read_csv(f"{self.config['inputdir']}{file}", low_memory=False)
 
     def handling_accuracy(self):
         # handle data type and formats
@@ -57,11 +68,18 @@ class Pipeline:
         # anonymisation,data retention
         pass
 
+    def save_data(self, file):
+        self.df.to_csv(f"{self.config['outputdir']}preprocessed_{file}", index=False)
+
     def wrangling(self):
+        logging.info("Starting wrangling process")
         self.read_config()
-        self.load_data()
-        # self.handling_text()
-        # self.handling_accuracy()
-        # self.handling_integrity()
-        self.handling_completeness()
-        # self.data_protection()
+        self.get_file_list()
+        for file in self.input_file_list:
+            self.load_data(file)
+            # self.handling_text()
+            # self.handling_accuracy()
+            # self.handling_integrity()
+            self.handling_completeness()
+            # self.data_protection()
+            self.save_data(file)
