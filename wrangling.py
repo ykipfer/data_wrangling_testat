@@ -8,5 +8,7 @@ logging.basicConfig(level=logging.DEBUG,
                     format="%(asctime)s: %(levelname)s - %(message)s")
 
 if __name__ == "__main__":
+    # create pipeline
     pipline = Pipeline()
-    pipline.wrangling()
+    # start pipeline
+    pipline.run_pipeline()

@@ -71,7 +71,7 @@ class Pipeline:
     def save_data(self, file):
         self.df.to_csv(f"{self.config['outputdir']}preprocessed_{file}", index=False)
 
-    def wrangling(self):
+    def run_pipeline(self):
         logging.info("Starting wrangling process")
         self.read_config()
         self.get_file_list()
