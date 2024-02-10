@@ -2,11 +2,6 @@ from utils.utils import remove_columns_with_missing
 import logging
 import pandas as pd
 
-logging.basicConfig(level=logging.DEBUG,
-                    filename=f"logs/{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.log",
-                    filemode="w",
-                    format="%(asctime)s: %(levelname)s - %(message)s")
-
 
 class Pipeline:
     def __init__(self, path_to_csv: str):
@@ -28,8 +23,8 @@ class Pipeline:
         # Remove all columns that have only null values or have null values above a certain threshold
         cols_before = self.df.shape[1]
         self.df, cols_to_remove = remove_columns_with_missing(self.df, threshold)
-        logging.info(f"Removed {cols_before - self.df.shape[1]} columns with > {int(threshold * 100)}% missing observations: {cols_to_remove}")
-
+        logging.info(
+            f"Removed {cols_before - self.df.shape[1]} columns with > {int(threshold * 100)}% missing observations: {cols_to_remove}")
 
     def handling_integrity(self):
         # handle duplicates
@@ -48,8 +43,8 @@ class Pipeline:
 
     def wrangling(self):
         self.load_data()
-        #self.handling_text()
-        #self.handling_accuracy()
-        #self.handling_integrity()
+        # self.handling_text()
+        # self.handling_accuracy()
+        # self.handling_integrity()
         self.handling_completeness()
-        #self.data_protection()
+        # self.data_protection()
