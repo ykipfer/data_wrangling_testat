@@ -1,7 +1,6 @@
 from utils.utils import remove_columns_with_missing
-import datetime
-import pandas as pd
 import logging
+import pandas as pd
 
 logging.basicConfig(level=logging.DEBUG,
                     filename=f"logs/{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.log",

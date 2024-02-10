@@ -1,5 +1,5 @@
-def find_missing_cols(df, threshold=0.9):
-    """ Find Columns with over 90% missing
+def find_missing_cols(df, threshold=1):
+    """ Find Columns with all (or threshold) missing
         Parameters:
         -----------
         df : pandas.DataFrame
@@ -11,7 +11,7 @@ def find_missing_cols(df, threshold=0.9):
     return [col for col in df.columns if df[col].isnull().sum() / df.shape[0] > threshold]
 
 
-def remove_columns_with_missing(df, threshold=100):
+def remove_columns_with_missing(df, threshold=1):
     """ Remove Columns with all (or threshold) missing
         Parameters:
         -----------
