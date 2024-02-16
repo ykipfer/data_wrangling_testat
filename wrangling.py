@@ -2,6 +2,7 @@ from models.models import Pipeline
 import datetime
 import logging
 
+# set up logging
 logging.basicConfig(level=logging.DEBUG,
                     filename=f"logs/{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.log",
                     filemode="w",

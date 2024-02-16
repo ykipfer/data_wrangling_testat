@@ -5,7 +5,6 @@ import json
 from utils.utils import remove_columns_with_missing
 
 
-
 class Pipeline:
     def __init__(self, config_path="config.json"):
         self.path_to_config = config_path
