@@ -1,6 +1,6 @@
 {
   "inputdir": "input/",
-  "outputdir": "output/",
+  "outputdir": "output/processed_data/",
   "threshold_missing": 0.9
 
 }
