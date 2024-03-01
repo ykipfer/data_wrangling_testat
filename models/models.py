@@ -2,7 +2,8 @@ import os
 import logging
 import pandas as pd
 import json
-from utils.utils import merge_to_date_time_col, remove_columns_with_missing, remove_rows_with_duplicate_col_conditionally
+from utils.utils import encrypt_col, merge_to_date_time_col, remove_columns_with_missing, remove_rows_with_duplicate_col_conditionally
+from cryptography.fernet import Fernet
 
 
 class Pipeline:
@@ -84,6 +85,12 @@ class Pipeline:
 
     def data_protection(self):
         # Code for data protection
+
+        # generate private key, can be reused to decrypt later
+        private_key = Fernet.generate_key()
+        # create fernet object
+        fernet = Fernet(private_key)
+        encrypt_col(df=self.df,col='url',fernet=fernet)
         # anonymisation,data retention
         pass
 

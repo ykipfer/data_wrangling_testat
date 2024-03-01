@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from cryptography.fernet import Fernet
 
 def find_missing_cols(df, threshold=1):
     """ Find Columns with all (or threshold) missing
@@ -115,3 +116,23 @@ def merge_to_date_time_col(df, year_col, month_col, datetime_col='merged_datetim
     # drop no longer needed cols
     return df_with_new_col.drop(columns=[year_col, month_col])
 
+def encrypt_col(df, col, fernet=None):
+    """
+    """
+    encrypt = hash
+    if fernet is not None: 
+        encrypt = fernet.encrypt
+
+    encrypted_df = df.copy()
+    # Ensure that 'url' column is of type string if not convert it
+    if isinstance(encrypted_df[col], str) is False:
+        encrypted_df[col] = encrypted_df[col].astype(str)
+    return encrypted_df[col].apply(lambda x: encrypt(x.encode()))
+
+def decrypt_col(df, col, fernet):
+    """
+    """
+
+    # encrypt url
+    df[col] = df[col].apply(lambda x: fernet.decrypt(x).decode())
+    return 
