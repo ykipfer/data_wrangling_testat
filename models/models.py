@@ -2,7 +2,7 @@ import os
 import logging
 import pandas as pd
 import json
-from utils.utils import encrypt_col, merge_to_date_time_col, remove_columns_with_missing, remove_rows_with_duplicate_col_conditionally
+from utils.utils import encrypt_col, harmonise_with_threshold, merge_to_date_time_col, remove_columns_with_missing, remove_rows_with_duplicate_col_conditionally, remove_rows_with_missing
 from cryptography.fernet import Fernet
 
 
@@ -54,6 +54,18 @@ class Pipeline:
         self.df, cols_to_remove = remove_columns_with_missing(self.df, self.config['threshold_missing'])
         logging.info(
             f"Removed {cols_before - self.df.shape[1]} columns with > {int(self.config['threshold_missing'] * 100)}% missing observations: {cols_to_remove}")
+        
+        rows_before = self.df.shape[0]
+        self.df, rows_to_remove = remove_rows_with_missing(self.df, self.config['threshold_missing'])
+        logging.info(
+            f"Removed {rows_before - self.df.shape[0]} rows with > {int(self.config['threshold_missing'] * 100)}% missing observations: {rows_to_remove}")
+
+
+        # impute missing values
+        self.df['mths_since_last_delinq'] = self.df['mths_since_last_delinq'].fillna(0)
+        self.df['tot_cur_bal'] = self.df['tot_cur_bal'].fillna(0)
+        self.df['tot_coll_amt'] = self.df['tot_coll_amt'].fillna(0)
+
 
     def handling_integrity(self):
         # handle duplicates
@@ -72,15 +84,30 @@ class Pipeline:
 
 
         # handle inconsistent data
-        regex = r'^.{0,1}$|^.{3,}$'
-        self.df['sub_grade'] = self.df['sub_grade'].replace(regex, None, regex=True)
-        #self.df['sub_grade'] = self.df['sub_grade'].replace('ALPHA_CENTAURI', None)
+        # Create a check that will delete any subgrade that is not a subset of grade
+        self.df['sub_grade'] = self.df['sub_grade'].apply(lambda x: x if x[0] in ['A', 'B', 'C', 'D', 'E', 'F', 'G'] and x[1].isdigit() else None)
         logging.info("Removed nonsensical values from the subgrade column")
+        # replace negative interest rate values with NaN
+        self.df['int_rate'] = self.df['int_rate'].apply(lambda x: x if x > 0 else None)
+
         pass
 
     def handling_text(self):
         # Code for handling text
         # harmonisation,business rules, deduplication
+        # convert to lower case and remove leading and trailing white spaces
+        self.df['emp_title'] = self.df['emp_title'].str.lower().str.strip()
+
+        # replace rn with registered nurse
+        self.df['emp_title'] = self.df['emp_title'].replace('rn', 'registered nurse')
+
+        # create list with cluster strings
+        cluster_list = ['manager', 'nurse', 'teacher', 'driver', 'assistant']
+
+        # harmonise job titles
+        for cluster_string in cluster_list:
+            harmonise_with_threshold(self.df,'emp_title', cluster_string, 90)
+
         pass
 
     def data_protection(self):

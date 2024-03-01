@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from cryptography.fernet import Fernet
+from thefuzz import process
 
 def find_missing_cols(df, threshold=1):
     """ Find Columns with all (or threshold) missing
@@ -27,6 +28,32 @@ def remove_columns_with_missing(df, threshold=1):
     """
     cols_to_remove = find_missing_cols(df, threshold)
     return df.drop(columns=cols_to_remove), cols_to_remove
+
+# remove rows with more than 95% missing values
+def find_rows_with_missing(df, threshold=1):
+    """ Find Rows with all (or threshold) missing
+        Parameters:
+        -----------
+        df : pandas.DataFrame
+        The input DataFrame to analyze for missing values.
+        Returns:
+        --------
+        List of Rows index
+    """
+    return df.index[df.isnull().mean(axis=1) > threshold].tolist()
+
+def remove_rows_with_missing(df, threshold=1):
+    """ Remove Rows with all (or threshold) missing
+        Parameters:
+        -----------
+        df : pandas.DataFrame
+        The input DataFrame to analyze for missing values.
+        Returns:
+        --------
+        pandas.DataFrame
+    """
+    rows_to_remove = find_rows_with_missing(df, threshold)
+    return df.drop(index=rows_to_remove), rows_to_remove
 
 def remove_rows_with_duplicate_col_conditionally(df, col, condition):
     """ Remove Rows where the column col id duplicate and the condition applies
@@ -134,5 +161,9 @@ def decrypt_col(df, col, fernet):
     """
 
     # encrypt url
-    df[col] = df[col].apply(lambda x: fernet.decrypt(x).decode())
-    return 
+    return df[col].apply(lambda x: fernet.decrypt(x).decode())
+
+def harmonise_with_threshold(df, col,cluster_string,threshold):
+    for val, similarity in process.extract(cluster_string, df[col].unique(), limit = len(df[col].unique())):
+        if similarity >= threshold:
+            df.loc[df[col] == val, col] = cluster_string
