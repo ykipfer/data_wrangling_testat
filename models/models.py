@@ -110,12 +110,9 @@ class Pipeline:
         # replace rn with registered nurse
         self.df['emp_title'] = self.df['emp_title'].replace('rn', 'registered nurse')
 
-        # create list with cluster strings
-        cluster_list = ['manager', 'nurse', 'teacher', 'driver', 'assistant']
-
         # harmonise job titles
-        for cluster_string in cluster_list:
-            harmonise_with_threshold(self.df,'emp_title', cluster_string, 90)
+        for cluster_string in self.config['cluster_list']:
+            harmonise_with_threshold(self.df,'emp_title', cluster_string, self.config['similarity_score_threshold'])
 
 
     def data_protection(self):
