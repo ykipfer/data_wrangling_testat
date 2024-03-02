@@ -13,27 +13,15 @@ class Pipeline:
         self.input_file_list = None
         self.df = None
 
-    def read_config(self):
-        """
-        Reads and loads the configuration from the specified JSON file.
+    def setup(self):
+        # set up logging
+        setup_logging()
 
-        Parameters:
-            config_json (str): The path to the JSON configuration file.
+        # read config
+        self.config = read_config(self.path_to_config)
 
-        Returns:
-            None
-        """
-        logging.info(f"Reading config from {self.path_to_config}")
-        with open(self.path_to_config) as f:
-            self.config = json.load(f)
-
-    def get_file_list(self):
-        """
-        Returns a list of all files in the specified directory.
-        """
-        self.input_file_list = os.listdir(self.config['inputdir'])
-        logging.info(f"Getting {len(self.input_file_list)} files from {self.config['inputdir']}")
-
+        # get input file list
+        self.input_file_list = get_file_list(self.config['inputdir'])
 
     def load_data(self, file):
         """
@@ -132,9 +120,7 @@ class Pipeline:
         self.df.to_csv(f"{self.config['outputdir']}clean_loan_data.csv", index=False)
 
     def run_pipeline(self):
-        logging.info("Starting wrangling process")
-        self.read_config()
-        self.get_file_list()
+        self.setup()
         for file in self.input_file_list:
             self.load_data(file)
             self.handling_text()
