@@ -46,7 +46,7 @@ class Pipeline:
         # handle data type and formats
         self.df['issue_month'] = self.df['issue_month'].replace('Octxyz', 'Oct')
         merge_to_date_time_col(df=self.df, year_col='issue_year', month_col='issue_month', datetime_col='issue_date')
-        pass
+
 
     def handling_completeness(self):
         # Remove all columns that have only null values or have null values above a certain threshold
@@ -90,8 +90,6 @@ class Pipeline:
         # replace negative interest rate values with NaN
         self.df['int_rate'] = self.df['int_rate'].apply(lambda x: x if x > 0 else None)
 
-        pass
-
     def handling_text(self):
         # Code for handling text
         # harmonisation,business rules, deduplication
@@ -108,7 +106,6 @@ class Pipeline:
         for cluster_string in cluster_list:
             harmonise_with_threshold(self.df,'emp_title', cluster_string, 90)
 
-        pass
 
     def data_protection(self):
         # Code for data protection
@@ -117,9 +114,9 @@ class Pipeline:
         private_key = Fernet.generate_key()
         # create fernet object
         fernet = Fernet(private_key)
+
+        # encrypt url column
         encrypt_col(df=self.df,col='url',fernet=fernet)
-        # anonymisation,data retention
-        pass
 
     def save_data(self, file):
         self.df.to_csv(f"{self.config['outputdir']}preprocessed_{file}", index=False)
@@ -130,9 +127,9 @@ class Pipeline:
         self.get_file_list()
         for file in self.input_file_list:
             self.load_data(file)
-            # self.handling_text()
+            self.handling_text()
             self.handling_accuracy()
             self.handling_integrity()
             self.handling_completeness()
-            # self.data_protection()
+            self.data_protection()
             self.save_data(file)
