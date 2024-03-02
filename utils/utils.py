@@ -1,7 +1,65 @@
 import numpy as np
 import pandas as pd
-from cryptography.fernet import Fernet
+import json
+import datetime
 from thefuzz import process
+import os
+import logging
+from ydata_profiling import ProfileReport
+
+def setup_logging():
+    """
+    Set up logging to file
+
+    Returns:
+        None
+    """
+    logging.basicConfig(level=logging.INFO,
+                        filename=f"logs/{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.log",
+                        filemode="w",
+                        format="%(asctime)s: %(levelname)s - %(message)s")
+
+def get_file_list(directory):
+    """
+    Returns a list of all files in the specified directory.
+    """
+
+    file_list = [file for file in os.listdir(directory) if file.endswith(".DS_Store") is False]
+    logging.info(f"Getting {len(file_list)} files from {directory}")
+    return file_list
+
+def read_config(config_path):
+    """
+    Reads and loads the configuration from the specified JSON file.
+
+    Parameters:
+        config_path (str): The path to the JSON configuration file.
+
+    Returns:
+        dict: The loaded configuration.
+    """
+    logging.info(f"Reading config from {config_path}")
+    with open(config_path) as f:
+        config = json.load(f)
+    return config
+
+
+def read_csv_to_df(file_path):
+    """
+    Reads a CSV file and returns a pandas DataFrame.
+
+    Parameters:
+    -----------
+    file_path : str
+        The path to the CSV file.
+
+    Returns:
+    --------
+    pandas.DataFrame
+        The DataFrame containing the CSV data.
+    """
+    df = pd.read_csv(file_path, low_memory=False)
+    return df
 
 def find_missing_cols(df, threshold=1):
     """ Find Columns with all (or threshold) missing
@@ -72,7 +130,7 @@ def remove_rows_with_duplicate_col_conditionally(df, col, condition):
     # filter for all entries containing duplicated col order by col
     duplicated_cols = df[df.duplicated(subset=col, keep=False)][col].unique().tolist()
     return df[~df[col].isin(duplicated_cols) | df[col].isin(duplicated_cols) & ~condition]
-    
+
 #currently does not work as intendend, still working on it
 def replace_non_dependend_cols(df, col, subcol, predicate):
     """ Replaces entries where the values of two cols that should be dependend on one another, are not dependend
@@ -147,7 +205,7 @@ def encrypt_col(df, col, fernet=None):
     """
     """
     encrypt = hash
-    if fernet is not None: 
+    if fernet is not None:
         encrypt = fernet.encrypt
 
     encrypted_df = df.copy()
@@ -167,3 +225,11 @@ def harmonise_with_threshold(df, col,cluster_string,threshold):
     for val, similarity in process.extract(cluster_string, df[col].unique(), limit = len(df[col].unique())):
         if similarity >= threshold:
             df.loc[df[col] == val, col] = cluster_string
+
+def create_profiling_report(df, outputdir):
+    """
+    Create a profiling report for the given DataFrame and save it to the specified output directory.
+    """
+    logging.info(f"Creating profiling report for the DataFrame")
+    profile = ProfileReport(df, title='Profiling Report: Cleaned Loan Data', minimal=True)
+    profile.to_file(output_file=f"output/profile/cleaned_profiling_report.html")
