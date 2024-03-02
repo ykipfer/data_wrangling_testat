@@ -3,6 +3,6 @@
   "outputdir": "output/processed_data/",
   "threshold_missing": 0.95,
   "cluster_list": ["manager", "nurse", "teacher", "driver", "assistant"],
-  "similarity_score_threshold": 0.9,
+  "similarity_score_threshold": 90,
   "encryption_key": "8I1f-KcaUufLUDggFE2DemhWgGjkTvHnq0zDvCgI4aE="
 }
