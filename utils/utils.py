@@ -247,3 +247,16 @@ def create_profiling_report(df, outputdir):
     logging.info(f"Creating profiling report for the DataFrame")
     profile = ProfileReport(df, title='Profiling Report: Cleaned Loan Data', minimal=True)
     profile.to_file(output_file=f"output/profile/cleaned_profiling_report.html")
+
+
+def create_output_directories():
+    """
+    Creates the specified directories if they do not exist.
+    """
+    directories = ["output/", "output/plots", "output/processed_data", "output/profile", "logs/"]
+    for directory in directories:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            logging.info(f"Created directory {directory}")
+        else:
+            logging.info(f"Directory {directory} already exists")

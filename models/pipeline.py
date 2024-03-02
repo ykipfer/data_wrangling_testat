@@ -2,6 +2,7 @@ import logging
 from utils.utils import (read_config,
                          setup_logging,
                          get_file_list,
+                         create_output_directories,
                          encrypt_col,
                          harmonise_with_threshold,
                          merge_to_date_time_col,
@@ -23,6 +24,9 @@ class Pipeline:
     def setup(self):
         # set up logging
         setup_logging()
+
+        # create output directories
+        create_output_directories()
 
         # read config
         self.config = read_config(self.path_to_config)
