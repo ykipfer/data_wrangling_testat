@@ -35,7 +35,9 @@ class Pipeline:
         Load CSV, or other data file, from the specified path and store it in the dataframe.
         """
         logging.info(f"Loading data from {file}")
-        self.df = pd.read_csv(f"{self.config['inputdir']}{file}", low_memory=False)
+        if file.endswith(".csv"):
+            self.df = read_csv_to_df(f'{self.config["inputdir"]}{file}')
+
 
     def handling_accuracy(self):
         # handle data type and formats
