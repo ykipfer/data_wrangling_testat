@@ -128,6 +128,9 @@ class Pipeline:
     def save_data(self, file):
         self.df.to_csv(f"{self.config['outputdir']}clean_loan_data.csv", index=False)
 
+    def profile_data(self):
+        create_profiling_report(self.df, self.config['outputdir'])
+
     def run_pipeline(self):
         self.setup()
         for file in self.input_file_list:
@@ -137,4 +140,5 @@ class Pipeline:
             self.handling_integrity()
             self.handling_completeness()
             self.data_protection()
+            self.profile_data()
             self.save_data(file)
