@@ -42,13 +42,11 @@ class Pipeline:
         if file.endswith(".csv"):
             self.df = read_csv_to_df(f'{self.config["inputdir"]}{file}')
 
-
     def handling_accuracy(self):
         # handle data type and formats
         self.df['issue_month'] = self.df['issue_month'].replace('Octxyz', 'Oct')
         # merge year and month columns to datetime column
         merge_to_date_time_col(df=self.df, year_col='issue_year', month_col='issue_month', datetime_col='issue_date')
-
 
     def handling_completeness(self):
         # Remove all columns that have only null values or have null values above a certain threshold
@@ -56,18 +54,16 @@ class Pipeline:
         self.df, cols_to_remove = remove_columns_with_missing(self.df, self.config['threshold_missing'])
         logging.info(
             f"Removed {cols_before - self.df.shape[1]} columns with > {int(self.config['threshold_missing'] * 100)}% missing observations: {cols_to_remove}")
-        
+
         rows_before = self.df.shape[0]
         self.df, rows_to_remove = remove_rows_with_missing(self.df, self.config['threshold_missing'])
         logging.info(
             f"Removed {rows_before - self.df.shape[0]} rows with > {int(self.config['threshold_missing'] * 100)}% missing observations: {rows_to_remove}")
 
-
         # impute missing values
         self.df['mths_since_last_delinq'] = self.df['mths_since_last_delinq'].fillna(0)
         self.df['tot_cur_bal'] = self.df['tot_cur_bal'].fillna(0)
         self.df['tot_coll_amt'] = self.df['tot_coll_amt'].fillna(0)
-
 
     def handling_integrity(self):
 
@@ -84,9 +80,8 @@ class Pipeline:
         condition = self.df['installment'] > 10000
         rows_before = self.df.shape[0]
         self.df = remove_rows_with_duplicate_col_conditionally(df=self.df, col='member_id', condition=condition)
-        logging.info(f"Removed {rows_before - self.df.shape[0]} rows which had the same " + 
+        logging.info(f"Removed {rows_before - self.df.shape[0]} rows which had the same " +
                      "member_id as another entry and the monthly installment was bigger than 10'000")
-
 
         # handle inconsistent data
         # check that subgrade is a subset of grade
@@ -96,7 +91,8 @@ class Pipeline:
         logging.info("Removed subgrade entries that are not a subset of grade entries")
 
         # Check if subgrade matches the required format (e.g. A1, B2, C3, etc.)
-        self.df['sub_grade'] = self.df['sub_grade'].apply(lambda x: x if x is not None and x[0] in ['A', 'B', 'C', 'D', 'E', 'F', 'G'] and x[1].isdigit() else None)
+        self.df['sub_grade'] = self.df['sub_grade'].apply(
+            lambda x: x if x is not None and x[0] in ['A', 'B', 'C', 'D', 'E', 'F', 'G'] and x[1].isdigit() else None)
         logging.info("Removed subgrade entries that do not match the required format (e.g. A1, B2, C3, etc.)")
 
         # replace negative interest rate values with NaN
@@ -114,8 +110,7 @@ class Pipeline:
 
         # harmonise job titles
         for cluster_string in self.config['cluster_list']:
-            harmonise_with_threshold(self.df,'emp_title', cluster_string, self.config['similarity_score_threshold'])
-
+            harmonise_with_threshold(self.df, 'emp_title', cluster_string, self.config['similarity_score_threshold'])
 
     def data_protection(self):
         # Code for data protection
@@ -127,7 +122,7 @@ class Pipeline:
         fernet = Fernet(private_key)
 
         # encrypt url column
-        encrypt_col(df=self.df,col='url',fernet=fernet)
+        encrypt_col(df=self.df, col='url', fernet=fernet)
 
     def save_data(self, file):
         self.df.to_csv(f"{self.config['outputdir']}clean_loan_data.csv", index=False)
