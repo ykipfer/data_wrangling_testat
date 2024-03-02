@@ -1,5 +1,5 @@
 
-# Data Wrangling Testat - Pipeline Refactoring
+# Data Wrangling Testat - Pipeline
 
 ## Description
 This repository contains the pipeline for our data wrangling project. The project aims to demonstrate data engineering techniques, including data profiling, data cleaning, transformation, and data visualisations using Python.
