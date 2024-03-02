@@ -45,6 +45,7 @@ class Pipeline:
     def handling_accuracy(self):
         # handle data type and formats
         self.df['issue_month'] = self.df['issue_month'].replace('Octxyz', 'Oct')
+        # merge year and month columns to datetime column
         merge_to_date_time_col(df=self.df, year_col='issue_year', month_col='issue_month', datetime_col='issue_date')
 
 
@@ -128,7 +129,7 @@ class Pipeline:
         encrypt_col(df=self.df,col='url',fernet=fernet)
 
     def save_data(self, file):
-        self.df.to_csv(f"{self.config['outputdir']}preprocessed_{file}", index=False)
+        self.df.to_csv(f"{self.config['outputdir']}clean_loan_data.csv", index=False)
 
     def run_pipeline(self):
         logging.info("Starting wrangling process")
