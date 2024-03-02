@@ -125,10 +125,10 @@ class Pipeline:
         encrypt_col(df=self.df, col='url', fernet=fernet)
 
     def save_data(self, file):
-        self.df.to_csv(f"{self.config['outputdir']}clean_loan_data.csv", index=False)
+        self.df.to_csv(f"{self.config['output_dir_data']}clean_loan_data.csv", index=False)
 
     def profile_data(self):
-        create_profiling_report(self.df, self.config['outputdir'])
+        create_profiling_report(self.df, self.config['output_dir_profile'])
 
     def run_pipeline(self):
         self.setup()

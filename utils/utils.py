@@ -240,13 +240,13 @@ def harmonise_with_threshold(df, col, cluster_string, threshold):
             df.loc[df[col] == val, col] = cluster_string
 
 
-def create_profiling_report(df, outputdir):
+def create_profiling_report(df, output_dir):
     """
     Create a profiling report for the given DataFrame and save it to the specified output directory.
     """
     logging.info(f"Creating profiling report for the DataFrame")
     profile = ProfileReport(df, title='Profiling Report: Cleaned Loan Data', minimal=True)
-    profile.to_file(output_file=f"output/profile/cleaned_profiling_report.html")
+    profile.to_file(output_file=f"{output_dir}cleaned_profiling_report.html")
 
 
 def create_output_directories():
