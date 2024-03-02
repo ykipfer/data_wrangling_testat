@@ -118,8 +118,9 @@ class Pipeline:
     def data_protection(self):
         # Code for data protection
 
-        # generate private key, can be reused to decrypt later
-        private_key = Fernet.generate_key()
+        # get private key
+        private_key = self.config["encryption_key"]
+
         # create fernet object
         fernet = Fernet(private_key)
 
