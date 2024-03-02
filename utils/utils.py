@@ -257,6 +257,3 @@ def create_output_directories():
     for directory in directories:
         if not os.path.exists(directory):
             os.makedirs(directory)
-            logging.info(f"Created directory {directory}")
-        else:
-            logging.info(f"Directory {directory} already exists")
