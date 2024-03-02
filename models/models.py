@@ -68,14 +68,17 @@ class Pipeline:
 
 
     def handling_integrity(self):
+
         # handle duplicates
-        # drop first column, which contains a row index
-        # (prevents detection of duplicate rows)
+        # drop first column, which contains a row index (prevents detection of duplicate rows)
         self.df = self.df.drop(columns='Unnamed: 0')
         rows_before = self.df.shape[0]
-        #drop rows where all values are duplicates
+
+        # drop rows where all values are duplicates
         self.df = self.df.drop_duplicates()
         logging.info(f"Removed {rows_before - self.df.shape[0]} rows with duplicates")
+
+        # remove rows with montly installment bigger than 10'000
         condition = self.df['installment'] > 10000
         rows_before = self.df.shape[0]
         self.df = remove_rows_with_duplicate_col_conditionally(df=self.df, col='member_id', condition=condition)
@@ -84,11 +87,19 @@ class Pipeline:
 
 
         # handle inconsistent data
-        # Create a check that will delete any subgrade that is not a subset of grade
-        self.df['sub_grade'] = self.df['sub_grade'].apply(lambda x: x if x[0] in ['A', 'B', 'C', 'D', 'E', 'F', 'G'] and x[1].isdigit() else None)
-        logging.info("Removed nonsensical values from the subgrade column")
+        # check that subgrade is a subset of grade
+        self.df['sub_grade'] = self.df.apply(
+            lambda row: row['sub_grade'] if row['sub_grade'] is not None and row['sub_grade'][0] in row[
+                'grade'] else None, axis=1)
+        logging.info("Removed subgrade entries that are not a subset of grade entries")
+
+        # Check if subgrade matches the required format (e.g. A1, B2, C3, etc.)
+        self.df['sub_grade'] = self.df['sub_grade'].apply(lambda x: x if x is not None and x[0] in ['A', 'B', 'C', 'D', 'E', 'F', 'G'] and x[1].isdigit() else None)
+        logging.info("Removed subgrade entries that do not match the required format (e.g. A1, B2, C3, etc.)")
+
         # replace negative interest rate values with NaN
         self.df['int_rate'] = self.df['int_rate'].apply(lambda x: x if x > 0 else None)
+        logging.info("Replaced negative interest rate values with NaN")
 
     def handling_text(self):
         # Code for handling text
