@@ -22,11 +22,12 @@ class Pipeline:
         self.df = None
 
     def setup(self):
-        # set up logging
-        setup_logging()
 
         # create output directories
         create_output_directories()
+
+        # set up logging
+        setup_logging()
 
         # read config
         self.config = read_config(self.path_to_config)
