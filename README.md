@@ -23,12 +23,17 @@ pip install -r requirements.txt
 ```
 
 ## Usage
-To run the data pipeline, navigate to the project's root directory and execute:
+To run the data pipeline, navigate to the project's root directory and execute. If necessary you can make adjustments to the config file `config.json`:
 ```bash
 python wrangling.py
 ```
 
-# Authors
+## Output
+The pipeline will generate the following files:
+- `output/processed_data/clean_loan_data.csv`: The cleaned and transformed data
+- `output/profile/cleaned_profiling_report.html`: The data profile report
+- `logs/`: Log files for the pipeline 
 
+# Authors
 * Stefan Mettler
 * Yanik Kipfer
