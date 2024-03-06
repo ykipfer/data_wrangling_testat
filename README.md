@@ -29,7 +29,7 @@ python wrangling.py
 ```
 
 ## Output
-The pipeline will generate the following files:
+The pipeline will generate the following files. Note, the `output` and `log` directories, as well as any subdirectories, will be automatically generated upon execution:
 - `output/processed_data/clean_loan_data.csv`: The cleaned and transformed data
 - `output/profile/cleaned_profiling_report.html`: The data profile report
 - `logs/`: Log files for the pipeline 
