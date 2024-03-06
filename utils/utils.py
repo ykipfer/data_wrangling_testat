@@ -201,15 +201,16 @@ def merge_to_date_time_col(df, year_col, month_col, datetime_col='merged_datetim
         --------
         pandas.DataFrame
     """
-    # sanity check, that we are working with string cols
-    # TODO: make day column optional
-    if (not has_string_type(df[year_col]) or not has_string_type(month_col)):
-        return
+    # We drop all rows where the year or month column is empty
+    df = df.dropna(subset=[month_col])
+    df = df.dropna(subset=[year_col])
+    # convert year to integer
+    df[year_col] = df[year_col].astype(int)
     # create new variable datetime_col with data type datetime
-    df_with_new_col = df.copy()
-    df_with_new_col[datetime_col] = pd.to_datetime(df[year_col].astype(str) + '-' + df[month_col], format='%Y-%b')
-    # drop no longer needed cols
-    return df_with_new_col.drop(columns=[year_col, month_col])
+    df[datetime_col] = pd.to_datetime(df[year_col].astype(str) + '-' + df[month_col], format='%Y-%b')
+    # drop year and month columns
+    df = df.drop(columns=[year_col, month_col])
+    return df
 
 
 def encrypt_col(df, col, fernet=None):

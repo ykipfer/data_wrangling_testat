@@ -47,7 +47,16 @@ class Pipeline:
         # handle data type and formats
         self.df['issue_month'] = self.df['issue_month'].replace('Octxyz', 'Oct')
         # merge year and month columns to datetime column
-        merge_to_date_time_col(df=self.df, year_col='issue_year', month_col='issue_month', datetime_col='issue_date')
+        self.df = merge_to_date_time_col(df=self.df, year_col='issue_year', month_col='issue_month', datetime_col='issue_date')
+        logging.info("Merged issue_year and issue_month to issue_date")
+        self.df = merge_to_date_time_col(df=self.df, year_col='earliest_cr_line_year', month_col='earliest_cr_line_month', datetime_col='earliest_cr_line_date')
+        logging.info("Merged earliest_cr_line_year and earliest_cr_line_month to earliest_cr_line_date")
+        self.df = merge_to_date_time_col(df=self.df, year_col='last_pymnt_year', month_col='last_pymnt_month', datetime_col='last_pymnt_date')
+        logging.info("Merged last_pymnt_year and last_pymnt_month to last_pymnt_date")
+        self.df = merge_to_date_time_col(df=self.df, year_col='next_pymnt_year', month_col='next_pymnt_month', datetime_col='next_pymnt_date')
+        logging.info("Merged next_pymnt_year and next_pymnt_month to next_pymnt_date")
+        self.df = merge_to_date_time_col(df=self.df, year_col='last_credit_pull_year', month_col='last_credit_pull_month', datetime_col='last_credit_pull_date')
+        logging.info("Merged last_credit_pull_year and last_credit_pull_month to last_credit_pull_date")
 
     def handling_completeness(self):
         # Remove all columns that have only null values or have null values above a certain threshold
