@@ -1,6 +1,10 @@
 {
   "inputdir": "input/",
-  "outputdir": "output/",
-  "threshold_missing": 0.9
-
+  "output_dir_data": "output/processed_data/",
+  "output_dir_profile": "output/profile/",
+  "output_dir_plots": "output/plots/",
+  "threshold_missing": 0.95,
+  "cluster_list": ["manager", "nurse", "teacher", "driver", "assistant"],
+  "similarity_score_threshold": 90,
+  "encryption_key": "8I1f-KcaUufLUDggFE2DemhWgGjkTvHnq0zDvCgI4aE="
 }
