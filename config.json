@@ -6,5 +6,6 @@
   "threshold_missing": 0.95,
   "cluster_list": ["manager", "nurse", "teacher", "driver", "assistant"],
   "similarity_score_threshold": 90,
-  "encryption_key": "8I1f-KcaUufLUDggFE2DemhWgGjkTvHnq0zDvCgI4aE="
+  "encryption_key": "8I1f-KcaUufLUDggFE2DemhWgGjkTvHnq0zDvCgI4aE=",
+  "member_ids_to_remove": [79912, 70868, 84091, 83132]
 }

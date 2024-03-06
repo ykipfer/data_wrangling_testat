@@ -59,6 +59,15 @@ class Pipeline:
         logging.info("Merged last_credit_pull_year and last_credit_pull_month to last_credit_pull_date")
 
     def handling_completeness(self):
+
+        # remove rows with member_id in list self.config['member_ids_to_remove']
+        member_ids_to_remove = self.config['member_ids_to_remove']
+
+        # remove rows with member_id in self.config['member_ids_to_remove']
+        rows_before = self.df.shape[0]
+        self.df = self.df[~self.df['member_id'].isin(member_ids_to_remove)]
+        logging.info(f"Removed {rows_before - self.df.shape[0]} rows with member_id in {member_ids_to_remove}")
+
         # Remove all columns that have only null values or have null values above a certain threshold
         cols_before = self.df.shape[1]
         self.df, cols_to_remove = remove_columns_with_missing(self.df, self.config['threshold_missing'])
@@ -145,10 +154,10 @@ class Pipeline:
         self.setup()
         for file in self.input_file_list:
             self.load_data(file)
-            self.handling_text()
-            self.handling_accuracy()
-            self.handling_integrity()
             self.handling_completeness()
+            self.handling_integrity()
+            self.handling_accuracy()
+            self.handling_text()
             self.data_protection()
             self.profile_data()
             self.save_data(file)
