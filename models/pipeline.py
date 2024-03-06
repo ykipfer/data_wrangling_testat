@@ -65,6 +65,7 @@ class Pipeline:
         logging.info(
             f"Removed {cols_before - self.df.shape[1]} columns with > {int(self.config['threshold_missing'] * 100)}% missing observations: {cols_to_remove}")
 
+        # Remove all rows that have null values above a certain threshold
         rows_before = self.df.shape[0]
         self.df, rows_to_remove = remove_rows_with_missing(self.df, self.config['threshold_missing'])
         logging.info(
