@@ -84,6 +84,7 @@ class Pipeline:
         self.df['mths_since_last_delinq'] = self.df['mths_since_last_delinq'].fillna(0)
         self.df['tot_cur_bal'] = self.df['tot_cur_bal'].fillna(0)
         self.df['tot_coll_amt'] = self.df['tot_coll_amt'].fillna(0)
+        self.df['total_rev_hi_lim'] = self.df['total_rev_hi_lim'].fillna(0)
 
     def handling_integrity(self):
 
@@ -145,7 +146,7 @@ class Pipeline:
         encrypt_col(df=self.df, col='url', fernet=fernet)
 
     def save_data(self, file):
-        self.df.to_csv(f"{self.config['output_dir_data']}clean_loan_data.csv", index=False)
+        self.df.to_csv(f"{self.config['output_dir_data']}wrangled_loan_data.csv", index=False)
 
     def profile_data(self):
         create_profiling_report(self.df, self.config['output_dir_profile'])

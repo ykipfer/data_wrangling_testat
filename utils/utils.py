@@ -215,6 +215,7 @@ def merge_to_date_time_col(df, year_col, month_col, datetime_col='merged_datetim
 
 def encrypt_col(df, col, fernet=None):
     """
+    Encrypts the specified column in the DataFrame.
     """
     encrypt = hash
     if fernet is not None:
@@ -229,13 +230,16 @@ def encrypt_col(df, col, fernet=None):
 
 def decrypt_col(df, col, fernet):
     """
+    Decrypts the specified column in the DataFrame.
     """
-
     # encrypt url
     return df[col].apply(lambda x: fernet.decrypt(x).decode())
 
 
 def harmonise_with_threshold(df, col, cluster_string, threshold):
+    """
+    Harmonises the specified column in the DataFrame with the given cluster string and threshold.
+    """
     for val, similarity in process.extract(cluster_string, df[col].unique(), limit=len(df[col].unique())):
         if similarity >= threshold:
             df.loc[df[col] == val, col] = cluster_string
@@ -246,8 +250,8 @@ def create_profiling_report(df, output_dir):
     Create a profiling report for the given DataFrame and save it to the specified output directory.
     """
     logging.info(f"Creating profiling report for the DataFrame")
-    profile = ProfileReport(df, title='Profiling Report: Cleaned Loan Data', minimal=True)
-    profile.to_file(output_file=f"{output_dir}cleaned_profiling_report.html")
+    profile = ProfileReport(df, title='Profiling Report: Wrangled Loan Data', minimal=True)
+    profile.to_file(output_file=f"{output_dir}wrangled_profiling_report.html")
 
 
 def create_output_directories():
