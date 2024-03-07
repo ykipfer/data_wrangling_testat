@@ -7,7 +7,7 @@ This repository contains the pipeline for our data wrangling project. The projec
 ## Installation
 
 ### Prerequisites
-- Python 3.11 or later
+- Python < 3.12
 - pip
 
 ### Steps
