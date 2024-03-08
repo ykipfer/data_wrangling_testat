@@ -217,22 +217,17 @@ def encrypt_col(df, col, fernet=None):
     """
     Encrypts the specified column in the DataFrame.
     """
-    encrypt = hash
-    if fernet is not None:
-        encrypt = fernet.encrypt
-
-    encrypted_df = df.copy()
     # Ensure that 'url' column is of type string if not convert it
-    if isinstance(encrypted_df[col], str) is False:
-        encrypted_df[col] = encrypted_df[col].astype(str)
-    return encrypted_df[col].apply(lambda x: encrypt(x.encode()))
+    if isinstance(df[col], str) is False:
+        df[col] = df[col].astype(str)
+    return df[col].apply(lambda x: fernet.encrypt(x.encode()))
 
 
 def decrypt_col(df, col, fernet):
     """
     Decrypts the specified column in the DataFrame.
     """
-    # encrypt url
+    # decrypt url
     return df[col].apply(lambda x: fernet.decrypt(x).decode())
 
 

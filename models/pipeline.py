@@ -143,7 +143,7 @@ class Pipeline:
         fernet = Fernet(private_key)
 
         # encrypt url column
-        encrypt_col(df=self.df, col='url', fernet=fernet)
+        self.df['url'] = encrypt_col(df=self.df, col='url', fernet=fernet)
 
     def save_data(self, file):
         self.df.to_csv(f"{self.config['output_dir_data']}wrangled_loan_data.csv", index=False)
