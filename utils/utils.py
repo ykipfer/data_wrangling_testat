@@ -253,7 +253,7 @@ def create_output_directories():
     """
     Creates the specified directories if they do not exist.
     """
-    directories = ["output/", "output/plots", "output/processed_data", "output/profile", "logs/"]
+    directories = ["output/", "output/processed_data", "output/profile", "logs/"]
     for directory in directories:
         if not os.path.exists(directory):
             os.makedirs(directory)
