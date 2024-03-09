@@ -91,8 +91,11 @@ class Pipeline:
 
         # handle duplicates
         # drop first column, which contains a row index (prevents detection of duplicate rows)
-        self.df = self.df.drop(columns='Unnamed: 0')
-        rows_before = self.df.shape[0]
+        try:
+            self.df = self.df.drop(columns='Unnamed: 0')
+            rows_before = self.df.shape[0]
+        except KeyError:
+            rows_before = self.df.shape[0]
 
         # drop rows where all values are duplicates
         self.df = self.df.drop_duplicates()
