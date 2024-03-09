@@ -1,4 +1,5 @@
 import logging
+import time
 from utils.utils import (read_config,
                          setup_logging,
                          get_file_list,
@@ -146,7 +147,9 @@ class Pipeline:
         self.df['url'] = encrypt_col(df=self.df, col='url', fernet=fernet)
 
     def save_data(self, file):
-        self.df.to_csv(f"{self.config['output_dir_data']}wrangled_loan_data.csv", index=False)
+        tst = int(time.time())
+        self.df.to_csv(f"{self.config['output_dir_data']}{tst}_wrangled_loan_data.csv", index=False)
+        logging.info(f"Saved wrangled data to {self.config['output_dir_data']}{tst}_wrangled_loan_data.csv")
 
     def profile_data(self):
         create_profiling_report(self.df, self.config['output_dir_profile'])

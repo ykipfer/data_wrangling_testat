@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
 import json
-import datetime
 from thefuzz import process
 import os
 import logging
+import time
+from datetime import datetime
 from ydata_profiling import ProfileReport
 
 
@@ -16,7 +17,7 @@ def setup_logging():
         None
     """
     logging.basicConfig(level=logging.INFO,
-                        filename=f"logs/{datetime.datetime.now().strftime('%Y%m%d-%H%M%S')}.log",
+                        filename=f"logs/{datetime.now().strftime('%Y%m%d-%H%M%S')}.log",
                         filemode="w",
                         format="%(asctime)s: %(levelname)s - %(message)s")
 
@@ -244,9 +245,11 @@ def create_profiling_report(df, output_dir):
     """
     Create a profiling report for the given DataFrame and save it to the specified output directory.
     """
+    tst = int(time.time())
     logging.info(f"Creating profiling report for the DataFrame")
     profile = ProfileReport(df, title='Profiling Report: Wrangled Loan Data', minimal=True)
-    profile.to_file(output_file=f"{output_dir}wrangled_profiling_report.html")
+    profile.to_file(output_file=f"{output_dir}{tst}_wrangled_profiling_report.html")
+    logging.info(f"Saved profiling report to {output_dir}{tst}_wrangled_profiling_report.html")
 
 
 def create_output_directories():
